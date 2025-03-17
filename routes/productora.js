@@ -1,36 +1,27 @@
 const { Router } = require('express');
 const Productora = require('../models/Productora');
-const { validationResult, check } = require('express-validator');
+const { check, validationResult } = require('express-validator');
 
 const router = Router();
 
-// Crear una nueva productora (POST)
+// Crear una productora
 router.post('/', [
-    check('name', 'invalid.name').not().isEmpty(),
-    check('state', 'invalid.state').isIn(['Active', 'Inactive']),
-    check('slogan', 'invalid.slogan').optional().not().isEmpty(),
-    check('descripcion', 'invalid.descripcion').optional().not().isEmpty()
-], async function (req, res) {
+    check('name', 'El nombre es obligatorio').not().isEmpty()
+], async (req, res) => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({ message: errors.array() });
+            return res.status(400).json({ errors: errors.array() });
         }
 
-        let productora = new Productora();
-        productora.name = req.body.name;
-        productora.state = req.body.state;
-        productora.slogan = req.body.slogan;
-        productora.descripcion = req.body.descripcion;
-        productora.createdAt = new Date();
-        productora.updatedAt = new Date();
+        const { name, slogan, descripcion } = req.body;
+        const productora = new Productora({ name, slogan, descripcion });
+        await productora.save();
 
-        productora = await productora.save();
-        res.send(productora);
-
+        res.status(201).json(productora);
     } catch (error) {
-        console.log(error);
-        res.status(500).send('message error');
+        console.error(error);
+        res.status(500).send('Error del servidor');
     }
 });
 
@@ -45,31 +36,21 @@ router.get('/', async function (req, res) {
     }
 });
 
-// Actualizar una productora por ID (PUT)
-router.put('/:id', [
-    check('name', 'invalid.name').optional().not().isEmpty(),
-    check('state', 'invalid.state').optional().isIn(['Active', 'Inactive']),
-    check('slogan', 'invalid.slogan').optional().not().isEmpty(),
-    check('descripcion', 'invalid.descripcion').optional().not().isEmpty()
-], async function (req, res) {
+// Editar una productora
+router.put('/:id', async (req, res) => {
     try {
-        let productora = await Productora.findById(req.params.id);
+        const productora = await Productora.findById(req.params.id);
         if (!productora) {
-            return res.status(404).send('Productora not found');
+            return res.status(404).json({ message: 'Productora no encontrada' });
         }
 
-        productora.name = req.body.name || productora.name;
-        productora.state = req.body.state || productora.state;
-        productora.slogan = req.body.slogan || productora.slogan;
-        productora.descripcion = req.body.descripcion || productora.descripcion;
-        productora.updatedAt = new Date();
+        Object.assign(productora, req.body, { fechaActualizacion: new Date() });
+        await productora.save();
 
-        productora = await productora.save();
-        res.send(productora);
-
+        res.json(productora);
     } catch (error) {
-        console.log(error);
-        res.status(500).send('message error');
+        console.error(error);
+        res.status(500).send('Error del servidor');
     }
 });
 

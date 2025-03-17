@@ -1,12 +1,11 @@
-const { Schema, model } = require('mongoose');
+const mongoose = require('mongoose');
 
-const generoSchema = Schema({
+const generoSchema = new mongoose.Schema({
     name: { type: String, required: true },
-    state: { type: String, required: true, enum: [ 'Active', 'Inactive' ]},
-    createdAt: { type: Date, required: true },
-    updatedAt: { type: Date, required: true },
-    descripcion: { type: String }
-
+    estado: { type: String, enum: ['Activo', 'Inactivo'], default: 'Activo' },
+    descripcion: { type: String },
+    fechaCreacion: { type: Date, default: Date.now },
+    fechaActualizacion: { type: Date, default: Date.now }
 });
 
-module.exports = model('Genero"', generoSchema);
+module.exports = mongoose.model('Genero', generoSchema);

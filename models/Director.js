@@ -1,10 +1,10 @@
-const { Schema, model } = require('mongoose');
+const mongoose = require('mongoose');
 
-const directorSchema = Schema({
-    name: { type: String, required: true },
-    state: { type: String, required: true, enum: [ 'Activo', 'Inactivo' ]},
-    createdAt: { type: Date, required: true },
-    updatedAt: { type: Date, required: true }
+const directorSchema = new mongoose.Schema({
+    nombres: { type: String, required: true },
+    estado: { type: String, enum: ['Activo', 'Inactivo'], default: 'Activo' },
+    fechaCreacion: { type: Date, default: Date.now },
+    fechaActualizacion: { type: Date, default: Date.now }
 });
 
-module.exports = model('Director', directorSchema);
+module.exports = mongoose.model('Director', directorSchema);

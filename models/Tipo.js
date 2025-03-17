@@ -1,13 +1,11 @@
-const { Schema, model } = require('mongoose');
+const mongoose = require('mongoose');
 
-const tipoSchema = Schema({
+const tipoSchema = new mongoose.Schema({
     name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    state: { type: String, required: true, enum: [ 'Active', 'Inactive' ]},
-    createdAt: { type: Date, required: true },
-    updatedAt: { type: Date, required: true }
-
+    descripcion: { type: String },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now }
 });
 
-module.exports = model('Tipo', tipoSchema);
+module.exports = mongoose.model('Tipo', tipoSchema);
 

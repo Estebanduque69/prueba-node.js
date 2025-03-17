@@ -1,13 +1,13 @@
-const { Schema, model } = require('mongoose');
+const mongoose = require('mongoose');
 
-const productoraSchema = Schema({
+const productoraSchema = new mongoose.Schema({
     name: { type: String, required: true },
-    state: { type: String, required: true, enum: [ 'Active', 'Inactive' ]},
-    createdAt: { type: Date, required: true },
-    updatedAt: { type: Date, required: true },
+    estado: { type: String, enum: ['Activo', 'Inactivo'], default: 'Activo' },
     slogan: { type: String },
-   descripcion: { type: String }
+    descripcion: { type: String },
+    fechaCreacion: { type: Date, default: Date.now },
+    fechaActualizacion: { type: Date, default: Date.now }
 });
 
-module.exports = model('Productora', productoraSchema);
+module.exports = mongoose.model('Productora', productoraSchema);
 

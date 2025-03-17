@@ -7,8 +7,7 @@ const router = Router();
 // Crear un nuevo tipo (POST)
 router.post('/', [
     check('name', 'invalid.name').not().isEmpty(),
-    check('email', 'invalid.email').isEmail(),
-    check('state', 'invalid.state').isIn(['Active', 'Inactive'])
+    check('descripcion', 'invalid.descripcion').optional().not().isEmpty()
 ], async function (req, res) {
     try {
         const errors = validationResult(req);
@@ -18,8 +17,7 @@ router.post('/', [
 
         let tipo = new Tipo();
         tipo.name = req.body.name;
-        tipo.email = req.body.email;
-        tipo.state = req.body.state;
+        tipo.descripcion = req.body.descripcion;
         tipo.createdAt = new Date();
         tipo.updatedAt = new Date();
 
@@ -46,8 +44,7 @@ router.get('/', async function (req, res) {
 // Actualizar un tipo por ID (PUT)
 router.put('/:id', [
     check('name', 'invalid.name').optional().not().isEmpty(),
-    check('email', 'invalid.email').optional().isEmail(),
-    check('state', 'invalid.state').optional().isIn(['Active', 'Inactive'])
+    check('descripcion', 'invalid.descripcion').optional().not().isEmpty()
 ], async function (req, res) {
     try {
         let tipo = await Tipo.findById(req.params.id);
@@ -56,8 +53,7 @@ router.put('/:id', [
         }
 
         tipo.name = req.body.name || tipo.name;
-        tipo.email = req.body.email || tipo.email;
-        tipo.state = req.body.state || tipo.state;
+        tipo.descripcion = req.body.descripcion || tipo.descripcion;
         tipo.updatedAt = new Date();
 
         tipo = await tipo.save();

@@ -10,6 +10,8 @@ getConnection();
 
 app.use(express.json());
 
+const cors = require('cors');
+app.use(cors());
 
 // Rutas de la API
 app.use('/directors', require('./routes/director'));
